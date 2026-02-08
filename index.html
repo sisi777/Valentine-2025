@@ -1,0 +1,75 @@
+from pathlib import Path
+
+html = """<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>💘 Valentine</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ff758c, #ff7eb3);
+      font-family: Arial, sans-serif;
+    }
+    .card {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+      max-width: 400px;
+    }
+    h1 {
+      font-size: 32px;
+      margin-bottom: 15px;
+    }
+    p {
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+    button {
+      font-size: 18px;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 12px;
+      background: #ff4d6d;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #e63950;
+    }
+    #response {
+      margin-top: 25px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #ff4d6d;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>💖 Question importante 💖</h1>
+    <p>Est-ce que tu veux être ma Valentine ?</p>
+    <button onclick="yes()">Oui 💕</button>
+    <div id="response"></div>
+  </div>
+
+  <script>
+    function yes() {
+      document.getElementById("response").innerHTML =
+        "Alors c’est officiel 💘<br>Rendez-vous Valentine confirmé 😌";
+    }
+  </script>
+
+</body>
+</html>
+"""
+
+Path("index.html").write_text(html, encoding="utf-8")
+print("✅ Site créé : index.html")

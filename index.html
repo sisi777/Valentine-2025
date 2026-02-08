@@ -1,72 +1,240 @@
-
-html = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>💘 Valentine</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>💘 Valentine ?</title>
   <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    * { box-sizing: border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:22px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       background: linear-gradient(135deg, #ff758c, #ff7eb3);
-      font-family: Arial, sans-serif;
     }
-    .card {
-      background: white;
-      padding: 40px;
-      border-radius: 20px;
-      text-align: center;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-      max-width: 400px;
+
+    .wrap{
+      width:min(820px, 95vw);
+      display:grid;
+      gap:14px;
+      justify-items:center;
+      text-align:center;
     }
-    h1 {
-      font-size: 32px;
-      margin-bottom: 15px;
+
+    .card{
+      width:100%;
+      background: rgba(255,255,255,0.92);
+      border-radius: 26px;
+      padding: 26px 18px;
+      box-shadow: 0 18px 60px rgba(0,0,0,0.25);
+      display:grid;
+      gap:14px;
+      justify-items:center;
     }
-    p {
+
+    h1{
+      margin:0;
+      font-size: clamp(26px, 4vw, 40px);
+      line-height:1.1;
+    }
+
+    p{
+      margin:0;
+      font-size: clamp(16px, 2.2vw, 18px);
+      line-height:1.4;
+      opacity:.9;
+    }
+
+    /* Galerie */
+    .gallery{
+      width:100%;
+      display:grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap:10px;
+      margin-top: 4px;
+    }
+
+    .hero{
+      border-radius: 18px;
+      overflow:hidden;
+      box-shadow: 0 12px 26px rgba(0,0,0,0.18);
+      cursor: zoom-in;
+    }
+
+    .hero img{
+      width:100%;
+      height:100%;
+      display:block;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      transform: scale(1.02);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+
+    .thumb{
+      border-radius: 18px;
+      overflow:hidden;
+      box-shadow: 0 12px 26px rgba(0,0,0,0.14);
+      cursor: zoom-in;
+      background:#fff;
+    }
+
+    .thumb img{
+      width:100%;
+      height:100%;
+      display:block;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+    }
+
+    @media (max-width: 620px){
+      .gallery{ grid-template-columns: 1fr; }
+      .hero img{ aspect-ratio: 1 / 1; }
+    }
+
+    button{
+      margin-top: 6px;
       font-size: 18px;
-      margin-bottom: 30px;
-    }
-    button {
-      font-size: 18px;
-      padding: 12px 25px;
-      border: none;
-      border-radius: 12px;
+      padding: 12px 22px;
+      border: 0;
+      border-radius: 14px;
       background: #ff4d6d;
       color: white;
       cursor: pointer;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.18);
+      transition: transform .08s ease, filter .12s ease;
     }
-    button:hover {
-      background: #e63950;
+    button:hover{ filter: brightness(.96); }
+    button:active{ transform: scale(.98); }
+
+    #response{
+      min-height: 30px;
+      font-weight: 800;
+      font-size: 18px;
+      color: #ff2f55;
     }
-    #response {
-      margin-top: 25px;
-      font-size: 20px;
-      font-weight: bold;
-      color: #ff4d6d;
+
+    .hint{ font-size: 12px; opacity: .65; }
+
+    /* Lightbox (zoom) */
+    .lightbox{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      display: none;
+      place-items: center;
+      padding: 18px;
+      z-index: 999;
+    }
+    .lightbox.open{ display: grid; }
+    .lightbox img{
+      width: min(980px, 96vw);
+      max-height: 88vh;
+      object-fit: contain;
+      border-radius: 18px;
+      box-shadow: 0 20px 70px rgba(0,0,0,0.45);
+      background: #111;
+    }
+    .close{
+      position: fixed;
+      top: 14px;
+      right: 14px;
+      background: rgba(255,255,255,0.92);
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
     }
   </style>
 </head>
-<body>
 
-  <div class="card">
-    <h1>💖 Question importante 💖</h1>
-    <p>Est-ce que tu veux être ma Valentine ?</p>
-    <button onclick="yes()">Oui 💕</button>
-    <div id="response"></div>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>💖 Question importante 💖</h1>
+      <p>Est-ce que tu veux être ma Valentine ?</p>
+
+      <div class="gallery">
+        <!-- grande photo -->
+        <div class="hero" data-img="images/1.jpg" title="Clique pour agrandir">
+          <img src="images/1.jpg" alt="Nous 1">
+        </div>
+
+        <!-- 3 petites -->
+        <div class="grid">
+          <div class="thumb" data-img="images/2.jpg" title="Clique pour agrandir">
+            <img src="images/2.jpg" alt="Nous 2">
+          </div>
+          <div class="thumb" data-img="images/3.jpg" title="Clique pour agrandir">
+            <img src="images/3.jpg" alt="Nous 3">
+          </div>
+          <div class="thumb" data-img="images/4.jpg" title="Clique pour agrandir">
+            <img src="images/4.jpg" alt="Nous 4">
+          </div>
+          <div class="thumb" data-img="images/1.jpg" title="Clique pour agrandir">
+            <img src="images/1.jpg" alt="Nous 1 bis">
+          </div>
+        </div>
+      </div>
+
+      <button id="yes">Oui 💕</button>
+      <div id="response"></div>
+      <div class="hint">Clique sur les photos pour les voir en grand 😌</div>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="close" id="closeBtn">✕</button>
+    <img id="lightboxImg" src="" alt="Photo agrandie">
   </div>
 
   <script>
-    function yes() {
-      document.getElementById("response").innerHTML =
-        "Alors c’est officiel 💘<br>Rendez-vous Valentine confirmé 😌";
-    }
-  </script>
+    const responseEl = document.getElementById("response");
+    document.getElementById("yes").addEventListener("click", () => {
+      responseEl.innerHTML = "Alors c’est officiel 💘<br>Rendez-vous Valentine confirmé 😌";
+    });
 
+    // Zoom photos
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightboxImg");
+    const closeBtn = document.getElementById("closeBtn");
+
+    function openLightbox(src){
+      lightboxImg.src = src;
+      lightbox.classList.add("open");
+      lightbox.setAttribute("aria-hidden", "false");
+    }
+
+    function closeLightbox(){
+      lightbox.classList.remove("open");
+      lightbox.setAttribute("aria-hidden", "true");
+      lightboxImg.src = "";
+    }
+
+    document.querySelectorAll("[data-img]").forEach(el => {
+      el.addEventListener("click", () => openLightbox(el.getAttribute("data-img")));
+    });
+
+    closeBtn.addEventListener("click", closeLightbox);
+    lightbox.addEventListener("click", (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeLightbox();
+    });
+  </script>
 </body>
 </html>
-"""
+
 
